@@ -18,9 +18,14 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var statusText: TextView
     private lateinit var grantCallPermissionButton: Button
+    private lateinit var grantBluetoothPermissionButton: Button
     private lateinit var disableBatteryOptimizationButton: Button
 
     private val requestCallPermission =
+        registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.RequestPermission()) {
+            refreshUi()
+        }
+    private val requestBluetoothPermission =
         registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.RequestPermission()) {
             refreshUi()
         }
@@ -35,10 +40,14 @@ class MainActivity : AppCompatActivity() {
 
         statusText = findViewById(R.id.statusText)
         grantCallPermissionButton = findViewById(R.id.grantCallPermissionButton)
+        grantBluetoothPermissionButton = findViewById(R.id.grantBluetoothPermissionButton)
         disableBatteryOptimizationButton = findViewById(R.id.disableBatteryOptimizationButton)
 
         grantCallPermissionButton.setOnClickListener {
             requestCallPermission.launch(Manifest.permission.CALL_PHONE)
+        }
+        grantBluetoothPermissionButton.setOnClickListener {
+            requestBluetoothPermission.launch(Manifest.permission.BLUETOOTH_CONNECT)
         }
         disableBatteryOptimizationButton.setOnClickListener {
             requestIgnoreBatteryOptimizations()
@@ -53,6 +62,10 @@ class MainActivity : AppCompatActivity() {
     private fun refreshUi() {
         val hasCallPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) ==
             PackageManager.PERMISSION_GRANTED
+        // Required at runtime (not just in the manifest) on API 31+ - the
+        // "connectedDevice" foreground service type refuses to start without it.
+        val hasBluetoothPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) ==
+            PackageManager.PERMISSION_GRANTED
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val hasNotificationPermission = ContextCompat.checkSelfPermission(
@@ -64,21 +77,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         grantCallPermissionButton.visibility = if (hasCallPermission) android.view.View.GONE else android.view.View.VISIBLE
+        grantBluetoothPermissionButton.visibility = if (hasBluetoothPermission) android.view.View.GONE else android.view.View.VISIBLE
 
         val batteryOptimized = !isIgnoringBatteryOptimizations()
         disableBatteryOptimizationButton.visibility =
             if (batteryOptimized) android.view.View.VISIBLE else android.view.View.GONE
 
-        if (!hasCallPermission) {
+        if (!hasCallPermission || !hasBluetoothPermission) {
             statusText.setText(R.string.permission_required)
             return
         }
 
-        if (hasCallPermission) {
-            val serviceIntent = Intent(this, DialerConnectionService::class.java)
-            ContextCompat.startForegroundService(this, serviceIntent)
-            statusText.setText(R.string.status_watching)
-        }
+        val serviceIntent = Intent(this, DialerConnectionService::class.java)
+        ContextCompat.startForegroundService(this, serviceIntent)
+        statusText.setText(R.string.status_watching)
     }
 
     private fun isIgnoringBatteryOptimizations(): Boolean {

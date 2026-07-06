@@ -5,6 +5,7 @@
     <string name="status_no_device">No paired Garmin device found</string>
     <string name="status_connect_unavailable">Open Garmin Connect and try again</string>
     <string name="grant_call_permission">Grant phone call permission</string>
+    <string name="grant_bluetooth_permission">Grant Bluetooth permission</string>
     <string name="disable_battery_optimization">Allow to run in background</string>
     <string name="permission_required">Call permission is required for this app to work</string>
 </resources>

@@ -81,8 +81,16 @@ class DialerConnectionService : Service() {
     }
 
     private fun handleMessage(message: List<Any>?) {
-        val payload = message?.getOrNull(0) as? Map<*, *> ?: return
-        val number = payload["n"] as? String ?: return
+        Log.d(TAG, "Message received from watch: $message")
+        val payload = message?.getOrNull(0) as? Map<*, *> ?: run {
+            Log.w(TAG, "Message payload was not a Map, ignoring")
+            return
+        }
+        val number = payload["n"] as? String ?: run {
+            Log.w(TAG, "Message had no 'n' key, ignoring: $payload")
+            return
+        }
+        Log.d(TAG, "Placing call to: $number")
         CallTrigger.placeCall(applicationContext, number)
     }
 

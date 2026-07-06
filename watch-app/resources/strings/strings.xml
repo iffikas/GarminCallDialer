@@ -1,7 +1,7 @@
 <strings>
     <string id="AppName">Call Dialer</string>
-    <string id="NoFavorites">No favorites set.\nAdd numbers in\nGarmin Connect app settings.</string>
-    <string id="Sending">Calling %s...</string>
+    <string id="NoFavorites">No favorites set.\nEdit properties.xml\nand reinstall.</string>
+    <string id="Sending">Calling $1$...</string>
     <string id="SendFailed">Failed to send.\nIs phone connected?</string>
     <string id="Favorite1NameTitle">Favorite 1 Name</string>
     <string id="Favorite1NumberTitle">Favorite 1 Number</string>

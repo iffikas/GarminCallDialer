@@ -28,6 +28,9 @@ class CallTransmitListener extends Communications.ConnectionListener {
 
     function onComplete() as Void {
         // Delivered to the companion app - it's now responsible for dialing.
+        // Pop back to the favorites menu instead of leaving the "Calling..."
+        // message on screen indefinitely.
+        WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
     }
 
     function onError() as Void {

@@ -1,5 +1,5 @@
 <properties>
-    <property id="Favorite1Name" type="string">Mom</property>
+    <property id="Favorite1Name" type="string"></property>
     <property id="Favorite1Number" type="string"></property>
     <property id="Favorite2Name" type="string"></property>
     <property id="Favorite2Number" type="string"></property>
