@@ -1,0 +1,17 @@
+# Signing key - never commit
+keys/*.pem
+keys/*.der
+
+# Connect IQ build output
+watch-app/bin/
+watch-app/bin_signed/
+*.prg
+*.iq
+
+# Android
+android-app/.gradle/
+android-app/.idea/
+android-app/local.properties
+android-app/*/build/
+android-app/build/
+android-app/*.iml

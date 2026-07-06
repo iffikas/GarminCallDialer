@@ -1,0 +1,12 @@
+<properties>
+    <property id="Favorite1Name" type="string">Mom</property>
+    <property id="Favorite1Number" type="string"></property>
+    <property id="Favorite2Name" type="string"></property>
+    <property id="Favorite2Number" type="string"></property>
+    <property id="Favorite3Name" type="string"></property>
+    <property id="Favorite3Number" type="string"></property>
+    <property id="Favorite4Name" type="string"></property>
+    <property id="Favorite4Number" type="string"></property>
+    <property id="Favorite5Name" type="string"></property>
+    <property id="Favorite5Number" type="string"></property>
+</properties>

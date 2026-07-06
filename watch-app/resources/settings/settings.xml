@@ -1,0 +1,32 @@
+<settings>
+    <setting propertyKey="@Properties.Favorite1Name" title="@Strings.Favorite1NameTitle">
+        <settingConfig type="alphaNumeric" maxLength="30"/>
+    </setting>
+    <setting propertyKey="@Properties.Favorite1Number" title="@Strings.Favorite1NumberTitle">
+        <settingConfig type="alphaNumeric" maxLength="20"/>
+    </setting>
+    <setting propertyKey="@Properties.Favorite2Name" title="@Strings.Favorite2NameTitle">
+        <settingConfig type="alphaNumeric" maxLength="30"/>
+    </setting>
+    <setting propertyKey="@Properties.Favorite2Number" title="@Strings.Favorite2NumberTitle">
+        <settingConfig type="alphaNumeric" maxLength="20"/>
+    </setting>
+    <setting propertyKey="@Properties.Favorite3Name" title="@Strings.Favorite3NameTitle">
+        <settingConfig type="alphaNumeric" maxLength="30"/>
+    </setting>
+    <setting propertyKey="@Properties.Favorite3Number" title="@Strings.Favorite3NumberTitle">
+        <settingConfig type="alphaNumeric" maxLength="20"/>
+    </setting>
+    <setting propertyKey="@Properties.Favorite4Name" title="@Strings.Favorite4NameTitle">
+        <settingConfig type="alphaNumeric" maxLength="30"/>
+    </setting>
+    <setting propertyKey="@Properties.Favorite4Number" title="@Strings.Favorite4NumberTitle">
+        <settingConfig type="alphaNumeric" maxLength="20"/>
+    </setting>
+    <setting propertyKey="@Properties.Favorite5Name" title="@Strings.Favorite5NameTitle">
+        <settingConfig type="alphaNumeric" maxLength="30"/>
+    </setting>
+    <setting propertyKey="@Properties.Favorite5Number" title="@Strings.Favorite5NumberTitle">
+        <settingConfig type="alphaNumeric" maxLength="20"/>
+    </setting>
+</settings>
