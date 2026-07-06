@@ -2,6 +2,12 @@
 
 Trigger a phone call directly from a Garmin Instinct 2 Solar, no phone interaction required.
 
+## Why I built this
+
+I use a gate/intercom code to get into my building, and I got tired of digging my phone out just to dial it. My Garmin Instinct 2 Solar seemed like the obvious way to do this with one press from my wrist — except Garmin's Connect IQ platform has no built-in way to place a phone call. This is the result of solving that for myself: a watch widget paired with a small Android companion app that does the actual dialing.
+
+It's built entirely around my own use case (a handful of speed-dial-style favorites, sideloaded on my own devices), so treat it as a working example/starting point rather than a polished product — see [Known limitations](#known-limitations-v1).
+
 Connect IQ has no native "place a phone call" API, so this is two apps talking over BLE:
 
 ```
@@ -129,3 +135,7 @@ Don't commit real favorite data (names/numbers) if this repo might ever go publi
 - Favorites are configured at build time (see [Configuring your favorites](#configuring-your-favorites)), not through Garmin Connect Mobile — sideloaded apps don't get an Application Settings entry point in the versions of Garmin Connect we tested against.
 - Phone number validation on the Android side is a permissive regex (digits, spaces, `+`, `-`, `*`, `#`, parens, 3–20 chars) — permissive enough for gate/intercom codes, not a full E.164 validator.
 - Up to 5 favorites, fixed slots (no add/remove, just fill in the ones you want).
+
+## License
+
+[Unlicense](LICENSE) — public domain. Do whatever you want with it.
