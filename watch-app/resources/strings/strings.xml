@@ -1,5 +1,5 @@
 <strings>
-    <string id="AppName">Garmin Dialer</string>
+    <string id="AppName">Garmin Dialer (widget)</string>
     <string id="NoFavorites">No favorites yet.\nOpen this widget,\nthen send from\nthe phone app.</string>
     <string id="NotSynced">Not synced to\nphone.\nPress SELECT\nto retry.</string>
     <string id="Sending">Calling $1$...</string>

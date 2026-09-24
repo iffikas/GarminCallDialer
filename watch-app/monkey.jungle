@@ -1,1 +1,55 @@
 project.manifest = manifest.xml
+
+# 26x26 monochrome launcher icon
+instinctcrossover.resourcePath = $(instinctcrossover.resourcePath);resources-icon26x26mono
+
+# 30x30 launcher icon
+legacyherocaptainmarvel.resourcePath = $(legacyherocaptainmarvel.resourcePath);resources-icon30x30
+legacysagarey.resourcePath = $(legacysagarey.resourcePath);resources-icon30x30
+vivoactive4s.resourcePath = $(vivoactive4s.resourcePath);resources-icon30x30
+
+# 35x35 launcher icon
+fr55.resourcePath = $(fr55.resourcePath);resources-icon35x35
+legacyherofirstavenger.resourcePath = $(legacyherofirstavenger.resourcePath);resources-icon35x35
+legacysagadarthvader.resourcePath = $(legacysagadarthvader.resourcePath);resources-icon35x35
+vivoactive4.resourcePath = $(vivoactive4.resourcePath);resources-icon35x35
+
+# 40x33 launcher icon
+vivoactive3m.resourcePath = $(vivoactive3m.resourcePath);resources-icon40x33
+
+# 40x40 launcher icon
+descentmk2.resourcePath = $(descentmk2.resourcePath);resources-icon40x40
+descentmk2s.resourcePath = $(descentmk2s.resourcePath);resources-icon40x40
+enduro.resourcePath = $(enduro.resourcePath);resources-icon40x40
+fenix5plus.resourcePath = $(fenix5plus.resourcePath);resources-icon40x40
+fenix5splus.resourcePath = $(fenix5splus.resourcePath);resources-icon40x40
+fenix5xplus.resourcePath = $(fenix5xplus.resourcePath);resources-icon40x40
+fenix6.resourcePath = $(fenix6.resourcePath);resources-icon40x40
+fenix6pro.resourcePath = $(fenix6pro.resourcePath);resources-icon40x40
+fenix6s.resourcePath = $(fenix6s.resourcePath);resources-icon40x40
+fenix6spro.resourcePath = $(fenix6spro.resourcePath);resources-icon40x40
+fenix6xpro.resourcePath = $(fenix6xpro.resourcePath);resources-icon40x40
+fr245.resourcePath = $(fr245.resourcePath);resources-icon40x40
+fr245m.resourcePath = $(fr245m.resourcePath);resources-icon40x40
+fr645m.resourcePath = $(fr645m.resourcePath);resources-icon40x40
+fr745.resourcePath = $(fr745.resourcePath);resources-icon40x40
+fr945.resourcePath = $(fr945.resourcePath);resources-icon40x40
+fr945lte.resourcePath = $(fr945lte.resourcePath);resources-icon40x40
+marqadventurer.resourcePath = $(marqadventurer.resourcePath);resources-icon40x40
+marqathlete.resourcePath = $(marqathlete.resourcePath);resources-icon40x40
+marqaviator.resourcePath = $(marqaviator.resourcePath);resources-icon40x40
+marqcaptain.resourcePath = $(marqcaptain.resourcePath);resources-icon40x40
+marqcommander.resourcePath = $(marqcommander.resourcePath);resources-icon40x40
+marqdriver.resourcePath = $(marqdriver.resourcePath);resources-icon40x40
+marqexpedition.resourcePath = $(marqexpedition.resourcePath);resources-icon40x40
+marqgolfer.resourcePath = $(marqgolfer.resourcePath);resources-icon40x40
+
+# 54x54 monochrome launcher icon
+instinct2s.resourcePath = $(instinct2s.resourcePath);resources-icon54x54mono
+
+# 60x60 launcher icon
+d2air.resourcePath = $(d2air.resourcePath);resources-icon60x60
+venu.resourcePath = $(venu.resourcePath);resources-icon60x60
+venud.resourcePath = $(venud.resourcePath);resources-icon60x60
+
+# Every other device uses the 62x62 icon in resources/

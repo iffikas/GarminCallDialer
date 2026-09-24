@@ -1,6 +1,12 @@
-# Garmin Call Dialer
+# Garmin Dialer (widget)
 
-Trigger a phone call directly from a Garmin Instinct 2 Solar, no phone interaction required.
+Trigger a phone call directly from a Garmin watch, no phone interaction required.
+
+> **This is the widget build, for older devices.** Connect IQ's `widget` app
+> type does not exist on anything recent, and glances for device apps only
+> arrived in API 4.0.0 — so devices below that stay here, and everything at or
+> above it is served by [GarminCallDialer2](../GarminCallDialer2), which uses a
+> device app with a glance. One Android companion app serves both.
 
 ## Why I built this
 
@@ -28,7 +34,23 @@ Connect IQ has no native "place a phone call" API, so this is two apps talking o
 - **android-app/** — Android companion app (Kotlin). Receives call requests via the Connect IQ Mobile SDK and places the call directly (no confirmation dialog), and lets you push an updated favorites list to the watch from its **Manage favorites** screen.
 - **releases/** — prebuilt binaries with placeholder (empty) favorites, ready to sideload. See [Quick install](#quick-install-prebuilt-binaries).
 
-Personal use only — both apps are sideloaded. Neither is submitted to the Connect IQ Store or Google Play.
+## Supported devices
+
+41 watch models: those that support the `widget` app type and sit in the
+[3.2.0, 4.0.0) Connect IQ range — 3.2.0 is what the favorites menu needs
+(`WatchUi.Menu2`), and at 4.0.0 the glance build takes over.
+
+`watch-app/tools/generate_device_support.py` is the source of truth. It reads
+the device profiles installed via the Connect IQ SDK Manager and regenerates the
+product list, the per-size launcher icons and the jungle wiring:
+
+```bash
+cd watch-app
+python tools/generate_device_support.py
+```
+
+Devices with a 62x62 icon (including Instinct 2) keep using the original icon in
+`resources/`; the other sizes are generated.
 
 ## Quick install (prebuilt binaries)
 
