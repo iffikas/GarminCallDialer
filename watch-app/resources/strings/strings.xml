@@ -1,8 +1,9 @@
 <strings>
-    <string id="AppName">Call Dialer</string>
+    <string id="AppName">Garmin Dialer</string>
     <string id="NoFavorites">No favorites yet.\nOpen this widget,\nthen send from\nthe phone app.</string>
     <string id="NotSynced">Not synced to\nphone.\nPress SELECT\nto retry.</string>
     <string id="Sending">Calling $1$...</string>
+    <string id="CallPlaced">Call being made\non phone</string>
     <string id="SendFailed">Failed to send.\nIs phone connected?</string>
     <string id="Favorite1NameTitle">Favorite 1 Name</string>
     <string id="Favorite1NumberTitle">Favorite 1 Number</string>
