@@ -89,30 +89,23 @@ class DialerApp extends Application.AppBase {
         cancelSyncTimer();
         _awaitingResponse = false;
 
-        // Temporary on-screen diagnostics for the "phone says sent, watch
-        // shows no favorites" issue - shown as an extra line under
-        // "No favorites yet" until we track down where the message is
-        // getting lost or coming back empty.
-        var payload = msg as Dictionary?;
+        // The payload is in msg.data - PhoneAppMessage is a wrapper, not the
+        // dictionary itself. Casting msg directly threw at runtime, which the
+        // watch surfaces as the Connect IQ crash screen.
+        var payload = msg.data as Dictionary?;
         if (payload == null) {
-            Storage.setValue("debugLastSync", "msg not Dict: " + msg.toString());
-            refreshView();
             return;
         }
 
         var list = payload.get("favorites") as Array?;
         if (list == null) {
-            Storage.setValue("debugLastSync", "no 'favorites' key: " + payload.toString());
-            refreshView();
             return;
         }
 
-        Storage.setValue("debugLastSync", "raw:" + list.size().toString() + " " + list.toString());
         Storage.setValue("favorites", list);
-        refreshView();
-    }
 
-    hidden function refreshView() as Void {
+        // Refresh immediately - covers both the case where the menu is
+        // already on screen and the "not synced" error view.
         var view = buildFavoritesView();
         WatchUi.switchToView(view[0], view[1], WatchUi.SLIDE_IMMEDIATE);
     }
@@ -121,12 +114,7 @@ class DialerApp extends Application.AppBase {
         var favorites = FavoritesStore.loadFavorites();
 
         if (favorites.size() == 0) {
-            var text = WatchUi.loadResource(Rez.Strings.NoFavorites) as String;
-            var debugInfo = Storage.getValue("debugLastSync") as String?;
-            if (debugInfo != null) {
-                text = text + "\n\n" + debugInfo;
-            }
-            var view = new MessageView(text);
+            var view = new MessageView(WatchUi.loadResource(Rez.Strings.NoFavorites) as String);
             return [view, new WatchUi.BehaviorDelegate()];
         }
 
