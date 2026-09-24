@@ -137,9 +137,9 @@ There are now two ways to set favorites. Both are limited to 5 slots (matching t
 
 ### From the Android app (recommended)
 
-Open the companion app → **Manage favorites**. For each slot you can either tap **Pick contact** (opens the system contacts picker — no extra permission needed) or type a name and number by hand (useful for things like a gate/intercom code that isn't in your contacts). Tap **Send to watch** to push the list to the watch over the same BLE channel the watch already uses to send call requests, just in the other direction.
+Open the companion app → **Manage favorites**. Existing favorites show as a compact list — tap **Remove** on any of them, or **+ Add favorite** to add a new one, either by tapping **Pick contact** (opens the system contacts picker — no extra permission needed) or typing a name/number by hand (useful for things like a gate/intercom code that isn't in your contacts). **Send to watch** stays pinned at the bottom and pushes the list over the same BLE channel the watch already uses to send call requests, just in the other direction.
 
-This requires Garmin Connect Mobile to be running and the watch to be connected, same as placing a call. The watch stores whatever it last received and prefers it over the build-time defaults below; the menu updates immediately if the widget is already open, or the next time you open it otherwise.
+This requires Garmin Connect Mobile to be running and the watch to be connected, same as placing a call. You don't need to time it with the widget being open, though: **every time the Call Dialer widget is opened on the watch, it asks the phone for the current list itself** (showing whatever it has cached in the meantime) and updates if anything changed. If the phone can't be reached in time (~6s), the widget shows "Not synced to phone" with a retry — press the watch's select button to ask again.
 
 ### At build time (fallback / initial default)
 

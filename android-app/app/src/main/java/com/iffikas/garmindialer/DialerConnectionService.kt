@@ -11,6 +11,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.garmin.android.connectiq.ConnectIQ
 import com.garmin.android.connectiq.IQApp
+import com.garmin.android.connectiq.IQDevice
 import com.garmin.android.connectiq.exception.InvalidStateException
 import com.garmin.android.connectiq.exception.ServiceUnavailableException
 
@@ -67,8 +68,8 @@ class DialerConnectionService : Service() {
                 connectIQ.registerForDeviceEvents(device) { _, status ->
                     Log.d(TAG, "Device status changed: $status")
                 }
-                connectIQ.registerForAppEvents(device, watchApp) { _, _, message, _ ->
-                    handleMessage(message)
+                connectIQ.registerForAppEvents(device, watchApp) { eventDevice, _, message, _ ->
+                    handleMessage(eventDevice, message)
                 }
             }
             updateNotification(getString(R.string.status_watching))
@@ -80,18 +81,43 @@ class DialerConnectionService : Service() {
         }
     }
 
-    private fun handleMessage(message: List<Any>?) {
+    private fun handleMessage(device: IQDevice, message: List<Any>?) {
         Log.d(TAG, "Message received from watch: $message")
         val payload = message?.getOrNull(0) as? Map<*, *> ?: run {
             Log.w(TAG, "Message payload was not a Map, ignoring")
             return
         }
+
+        val command = payload["cmd"] as? String
+        if (command == "get_favorites") {
+            Log.d(TAG, "Watch requested current favorites")
+            sendFavoritesToDevice(device)
+            return
+        }
+
         val number = payload["n"] as? String ?: run {
             Log.w(TAG, "Message had no 'n' key, ignoring: $payload")
             return
         }
         Log.d(TAG, "Placing call to: $number")
         CallTrigger.placeCall(applicationContext, number)
+    }
+
+    // Answers the watch's on-open sync request with whatever favorites are
+    // currently saved on the phone (possibly an empty list, which clears
+    // stale favorites the watch cached from before).
+    private fun sendFavoritesToDevice(device: IQDevice) {
+        try {
+            val favorites = FavoritesRepository.load(applicationContext)
+            val payload = mapOf("favorites" to favorites)
+            connectIQ.sendMessage(device, watchApp, payload) { _, _, status ->
+                Log.d(TAG, "Favorites sync response status: $status")
+            }
+        } catch (e: InvalidStateException) {
+            Log.e(TAG, "ConnectIQ not initialized", e)
+        } catch (e: ServiceUnavailableException) {
+            Log.e(TAG, "Garmin Connect Mobile not running", e)
+        }
     }
 
     override fun onDestroy() {

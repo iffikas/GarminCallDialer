@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Garmin-inspired blue/gray palette (dark) -->
+    <color name="color_primary">#4FA8D8</color>
+    <color name="color_primary_variant">#7EC3E8</color>
+    <color name="color_accent">#4FA8D8</color>
+    <color name="color_on_primary">#0A2030</color>
+    <color name="color_background">#121E28</color>
+    <color name="color_surface">#1C2C38</color>
+    <color name="color_on_background">#ECF2F6</color>
+    <color name="color_on_surface_variant">#A9B9C4</color>
+    <color name="color_outline">#3A4B58</color>
+</resources>

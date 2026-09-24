@@ -26,6 +26,10 @@ import com.garmin.android.connectiq.exception.ServiceUnavailableException
  * them to the watch over the same ConnectIQ BLE channel the watch uses to
  * send call requests, in the opposite direction.
  *
+ * Only the favorites that exist are shown as rows; "Add favorite" appends a
+ * new empty row (up to the limit) and each row can be removed individually,
+ * rather than always showing 5 blank slots.
+ *
  * The picker uses ContactsContract.CommonDataKinds.Phone.CONTENT_URI via
  * ACTION_PICK rather than querying Contacts directly, so no READ_CONTACTS
  * permission is needed - the system picker grants a one-off read URI for
@@ -33,12 +37,11 @@ import com.garmin.android.connectiq.exception.ServiceUnavailableException
  */
 class FavoritesActivity : AppCompatActivity() {
 
-    private lateinit var nameFields: Array<EditText>
-    private lateinit var numberFields: Array<EditText>
+    private lateinit var container: LinearLayout
+    private lateinit var addFavoriteButton: Button
     private lateinit var syncStatusText: TextView
-    private lateinit var prefs: android.content.SharedPreferences
 
-    private var pickContactForIndex = -1
+    private var pendingPickRow: android.view.View? = null
     private val pickContact = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         onContactPicked(result)
     }
@@ -48,33 +51,18 @@ class FavoritesActivity : AppCompatActivity() {
         setContentView(R.layout.activity_favorites)
         title = getString(R.string.manage_favorites)
 
-        prefs = getSharedPreferences(Constants.FAVORITES_PREFS_NAME, MODE_PRIVATE)
+        container = findViewById(R.id.favoritesContainer)
+        addFavoriteButton = findViewById(R.id.addFavoriteButton)
         syncStatusText = findViewById(R.id.syncStatusText)
 
-        val container = findViewById<LinearLayout>(R.id.favoritesContainer)
-        val inflater = LayoutInflater.from(this)
-        nameFields = Array(Constants.MAX_FAVORITES) { EditText(this) }
-        numberFields = Array(Constants.MAX_FAVORITES) { EditText(this) }
-
-        for (i in 0 until Constants.MAX_FAVORITES) {
-            val row = inflater.inflate(R.layout.item_favorite_row, container, false)
-            nameFields[i] = row.findViewById(R.id.nameField)
-            numberFields[i] = row.findViewById(R.id.numberField)
-            nameFields[i].setText(prefs.getString(Constants.favoriteNameKey(i), ""))
-            numberFields[i].setText(prefs.getString(Constants.favoriteNumberKey(i), ""))
-
-            row.findViewById<Button>(R.id.pickContactButton).setOnClickListener {
-                pickContactForIndex = i
-                val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
-                pickContact.launch(intent)
-            }
-            row.findViewById<Button>(R.id.clearButton).setOnClickListener {
-                nameFields[i].setText("")
-                numberFields[i].setText("")
-            }
-
-            container.addView(row)
+        for (favorite in FavoritesRepository.load(this)) {
+            addFavoriteRow(favorite["name"] ?: "", favorite["number"] ?: "")
         }
+
+        addFavoriteButton.setOnClickListener {
+            addFavoriteRow("", "")
+        }
+        updateAddButtonVisibility()
 
         findViewById<Button>(R.id.sendToWatchButton).setOnClickListener {
             saveFavorites()
@@ -82,10 +70,34 @@ class FavoritesActivity : AppCompatActivity() {
         }
     }
 
+    private fun addFavoriteRow(name: String, number: String) {
+        val row = LayoutInflater.from(this).inflate(R.layout.item_favorite_row, container, false)
+        row.findViewById<EditText>(R.id.nameField).setText(name)
+        row.findViewById<EditText>(R.id.numberField).setText(number)
+
+        row.findViewById<Button>(R.id.pickContactButton).setOnClickListener {
+            pendingPickRow = row
+            val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
+            pickContact.launch(intent)
+        }
+        row.findViewById<Button>(R.id.removeButton).setOnClickListener {
+            container.removeView(row)
+            updateAddButtonVisibility()
+        }
+
+        container.addView(row)
+        updateAddButtonVisibility()
+    }
+
+    private fun updateAddButtonVisibility() {
+        addFavoriteButton.visibility =
+            if (container.childCount >= Constants.MAX_FAVORITES) android.view.View.GONE else android.view.View.VISIBLE
+    }
+
     private fun onContactPicked(result: androidx.activity.result.ActivityResult) {
-        val index = pickContactForIndex
-        pickContactForIndex = -1
-        if (result.resultCode != Activity.RESULT_OK || index !in 0 until Constants.MAX_FAVORITES) {
+        val row = pendingPickRow
+        pendingPickRow = null
+        if (result.resultCode != Activity.RESULT_OK || row == null) {
             return
         }
         val contactUri: Uri = result.data?.data ?: return
@@ -98,10 +110,10 @@ class FavoritesActivity : AppCompatActivity() {
                 val number = if (numberIndex >= 0) cursor.getString(numberIndex) else null
 
                 if (!name.isNullOrBlank()) {
-                    nameFields[index].setText(name)
+                    row.findViewById<EditText>(R.id.nameField).setText(name)
                 }
                 if (!number.isNullOrBlank()) {
-                    numberFields[index].setText(number)
+                    row.findViewById<EditText>(R.id.numberField).setText(number)
                 }
             }
         }
@@ -109,9 +121,10 @@ class FavoritesActivity : AppCompatActivity() {
 
     private fun collectFavorites(): List<Map<String, String>> {
         val favorites = mutableListOf<Map<String, String>>()
-        for (i in 0 until Constants.MAX_FAVORITES) {
-            val name = nameFields[i].text.toString().trim()
-            val number = numberFields[i].text.toString().trim()
+        for (i in 0 until container.childCount) {
+            val row = container.getChildAt(i)
+            val name = row.findViewById<EditText>(R.id.nameField).text.toString().trim()
+            val number = row.findViewById<EditText>(R.id.numberField).text.toString().trim()
             if (name.isNotEmpty() && number.isNotEmpty()) {
                 favorites.add(mapOf("name" to name, "number" to number))
             }
@@ -120,12 +133,7 @@ class FavoritesActivity : AppCompatActivity() {
     }
 
     private fun saveFavorites() {
-        prefs.edit().apply {
-            for (i in 0 until Constants.MAX_FAVORITES) {
-                putString(Constants.favoriteNameKey(i), nameFields[i].text.toString().trim())
-                putString(Constants.favoriteNumberKey(i), numberFields[i].text.toString().trim())
-            }
-        }.apply()
+        FavoritesRepository.save(this, collectFavorites())
     }
 
     private fun sendFavoritesToWatch() {

@@ -3,8 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp">
+    android:background="?attr/colorSurface"
+    android:padding="12dp"
+    android:layout_marginBottom="12dp">
 
     <EditText
         android:id="@+id/nameField"
@@ -29,25 +30,20 @@
 
         <Button
             android:id="@+id/pickContactButton"
-            style="?android:attr/buttonBarButtonStyle"
+            style="?attr/materialButtonOutlinedStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginEnd="8dp"
             android:text="@string/pick_contact" />
 
         <Button
-            android:id="@+id/clearButton"
-            style="?android:attr/buttonBarButtonStyle"
+            android:id="@+id/removeButton"
+            style="?attr/materialButtonOutlinedStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/clear_favorite" />
+            android:text="@string/remove_favorite" />
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:background="?android:attr/listDivider" />
 
 </LinearLayout>
