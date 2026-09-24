@@ -6,4 +6,11 @@ object Constants {
 
     const val NOTIFICATION_CHANNEL_ID = "dialer_connection"
     const val NOTIFICATION_ID = 1
+
+    // Matches the watch widget's fixed number of menu slots.
+    const val MAX_FAVORITES = 5
+
+    const val FAVORITES_PREFS_NAME = "favorites"
+    fun favoriteNameKey(index: Int) = "favorite_${index}_name"
+    fun favoriteNumberKey(index: Int) = "favorite_${index}_number"
 }

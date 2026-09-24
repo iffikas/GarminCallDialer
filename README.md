@@ -14,16 +14,18 @@ Connect IQ has no native "place a phone call" API, so this is two apps talking o
  Garmin watch (Connect IQ widget)          Android phone (companion app)
  ┌─────────────────────────────┐  BLE via  ┌───────────────────────────────┐
  │ Favorites menu (5 slots,    │  Garmin   │ ConnectIQ SDK listener        │
- │ Name+Number baked into      │  Connect  │ (foreground service)          │
- │ the widget at build time)   │  Mobile   │        │                      │
- │        │                    │ ────────► │        ▼                     │
- │        ▼                    │           │ TelecomManager.placeCall()    │
- │ Communications.transmit()   │           │ (CALL_PHONE permission)       │
+ │ stored on-device, seeded    │◄────────► │ (foreground service) +        │
+ │ from Application Properties │  Mobile   │ FavoritesActivity (pick from  │
+ │ at build time)              │           │ contacts or type manually)    │
+ │        │                    │           │        │                      │
+ │        ▼                    │           │        ▼                     │
+ │ Communications.transmit()   │ ────────► │ TelecomManager.placeCall()    │
+ │ (call request)              │           │ (CALL_PHONE permission)       │
  └─────────────────────────────┘           └───────────────────────────────┘
 ```
 
 - **watch-app/** — Connect IQ widget (Monkey C). Shows up to 5 favorites, transmits `{"n": "<number>"}` on selection.
-- **android-app/** — Android companion app (Kotlin). Receives the message via the Connect IQ Mobile SDK and places the call directly, no confirmation dialog.
+- **android-app/** — Android companion app (Kotlin). Receives call requests via the Connect IQ Mobile SDK and places the call directly (no confirmation dialog), and lets you push an updated favorites list to the watch from its **Manage favorites** screen.
 - **releases/** — prebuilt binaries with placeholder (empty) favorites, ready to sideload. See [Quick install](#quick-install-prebuilt-binaries).
 
 Personal use only — both apps are sideloaded. Neither is submitted to the Connect IQ Store or Google Play.
@@ -67,6 +69,40 @@ JAVA_HOME="/c/Program Files/Android/Android Studio/jbr" ANDROID_HOME="$HOME/AppD
 
 Output: `app/build/outputs/apk/debug/app-debug.apk`.
 
+## Building a signed release (for Play Store submission)
+
+`assembleDebug` (above) produces a debug-signed APK, fine for sideloading but
+not accepted by Google Play. To build a release APK/AAB signed with a real
+release key:
+
+1. Generate a release keystore once (skip if you already have one):
+   ```bash
+   keytool -genkeypair -v -keystore keys/release.keystore -alias garmindialer \
+     -keyalg RSA -keysize 2048 -validity 10000
+   ```
+2. Create `android-app/keystore.properties` (gitignored, never commit it):
+   ```
+   storeFile=../../keys/release.keystore
+   storePassword=<your store password>
+   keyAlias=garmindialer
+   keyPassword=<your key password>
+   ```
+3. Build:
+   ```bash
+   cd android-app
+   JAVA_HOME="/c/Program Files/Android/Android Studio/jbr" ANDROID_HOME="$HOME/AppData/Local/Android/Sdk" ./gradlew.bat assembleRelease
+   ```
+   Output: `app/build/outputs/apk/release/app-release.apk`. For Play Console
+   you'll generally want an `.aab` instead: `./gradlew.bat bundleRelease` →
+   `app/build/outputs/bundle/release/app-release.aab`.
+
+**Back up `keys/release.keystore` and its passwords somewhere durable (a
+password manager) outside this repo.** Losing them means you can never
+publish an update to the same Play Store listing again.
+
+See [PRIVACY.md](PRIVACY.md) and [STORE_LISTING.md](STORE_LISTING.md) for the
+privacy policy and Play Store listing draft.
+
 ## Installing on your devices
 
 ### Android companion app
@@ -97,13 +133,23 @@ The watch shows up as a plain USB mass-storage drive when connected — no speci
 
 ## Configuring your favorites
 
-**Garmin Connect Mobile's Application Settings screen does not reliably work for sideloaded widgets** — we tried extensively (Activities & Apps, Appearance → Glances, Connect IQ Store → My Widgets) and none of them expose a settings/gear icon for an app that wasn't installed through the Connect IQ Store. "My Widgets" specifically only tracks store-installed apps.
+There are now two ways to set favorites. Both are limited to 5 slots (matching the watch widget's fixed menu size).
 
-So for now, favorites are configured **at build time**, directly in the source:
+### From the Android app (recommended)
+
+Open the companion app → **Manage favorites**. For each slot you can either tap **Pick contact** (opens the system contacts picker — no extra permission needed) or type a name and number by hand (useful for things like a gate/intercom code that isn't in your contacts). Tap **Send to watch** to push the list to the watch over the same BLE channel the watch already uses to send call requests, just in the other direction.
+
+This requires Garmin Connect Mobile to be running and the watch to be connected, same as placing a call. The watch stores whatever it last received and prefers it over the build-time defaults below; the menu updates immediately if the widget is already open, or the next time you open it otherwise.
+
+### At build time (fallback / initial default)
+
+**Garmin Connect Mobile's Application Settings screen does not reliably work for sideloaded widgets** — we tried extensively (Activities & Apps, Appearance → Glances, Connect IQ Store → My Widgets) and none of them expose a settings/gear icon for an app that wasn't installed through the Connect IQ Store. "My Widgets" specifically only tracks store-installed apps. So build-time properties are the only pre-phone-app way to seed favorites:
 
 1. Edit `watch-app/resources/properties/properties.xml` — fill in `Favorite1Name`/`Favorite1Number` through `Favorite5Name`/`Favorite5Number`. Only slots with both a name and a number show up in the widget's menu.
 2. Rebuild: `monkeyc -f monkey.jungle -y ../keys/developer_key.der -d instinct2 -o bin/DialerWidget.prg -w -r` (from `watch-app/`).
 3. Copy the new `.prg` to the watch as described above.
+
+These only apply until the phone app sends a list at least once — after that, the phone-sent list (stored on-device) takes over.
 
 **If your changes don't show up after reinstalling**: Connect IQ persists Application Properties to a file on the watch itself, separate from the `.prg`. If the widget was ever opened before with different property values, those old values win over your new defaults — the exact same "stale settings" behavior as the simulator. Fix: with the watch connected via USB, delete `GARMIN/APPS/SETTINGS/<yourfilename>.SET` (matching whatever you named the `.prg`), eject, then open the widget again on the watch — it'll re-read the fresh defaults compiled into the `.prg`.
 
@@ -132,7 +178,7 @@ Don't commit real favorite data (names/numbers) if this repo might ever go publi
 ## Known limitations (v1)
 
 - No call state feedback to the watch — the "Calling..." message only confirms BLE delivery, not that the call connected.
-- Favorites are configured at build time (see [Configuring your favorites](#configuring-your-favorites)), not through Garmin Connect Mobile — sideloaded apps don't get an Application Settings entry point in the versions of Garmin Connect we tested against.
+- Favorites can be set from the Android app now (see [Configuring your favorites](#configuring-your-favorites)), but not through Garmin Connect Mobile's own settings screen — sideloaded apps don't get an Application Settings entry point in the versions of Garmin Connect we tested against.
 - Phone number validation on the Android side is a permissive regex (digits, spaces, `+`, `-`, `*`, `#`, parens, 3–20 chars) — permissive enough for gate/intercom codes, not a full E.164 validator.
 - Up to 5 favorites, fixed slots (no add/remove, just fill in the ones you want).
 

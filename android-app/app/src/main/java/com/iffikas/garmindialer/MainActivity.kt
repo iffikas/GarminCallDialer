@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var grantCallPermissionButton: Button
     private lateinit var grantBluetoothPermissionButton: Button
     private lateinit var disableBatteryOptimizationButton: Button
+    private lateinit var manageFavoritesButton: Button
 
     private val requestCallPermission =
         registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.RequestPermission()) {
@@ -42,6 +43,11 @@ class MainActivity : AppCompatActivity() {
         grantCallPermissionButton = findViewById(R.id.grantCallPermissionButton)
         grantBluetoothPermissionButton = findViewById(R.id.grantBluetoothPermissionButton)
         disableBatteryOptimizationButton = findViewById(R.id.disableBatteryOptimizationButton)
+        manageFavoritesButton = findViewById(R.id.manageFavoritesButton)
+
+        manageFavoritesButton.setOnClickListener {
+            startActivity(Intent(this, FavoritesActivity::class.java))
+        }
 
         grantCallPermissionButton.setOnClickListener {
             requestCallPermission.launch(Manifest.permission.CALL_PHONE)

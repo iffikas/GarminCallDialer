@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy — Garmin Call Dialer</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 20px 64px;
+    line-height: 1.55;
+  }
+  h1 { font-size: 1.6em; margin-bottom: 0.2em; }
+  .updated { color: #767676; font-size: 0.9em; margin-bottom: 2em; }
+  h2 { margin-top: 2em; font-size: 1.2em; }
+  table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+  th, td { text-align: left; padding: 8px 10px; border: 1px solid #8884; vertical-align: top; }
+  th { background: #80808022; }
+  code { background: #80808022; padding: 0.1em 0.35em; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<h1>Privacy Policy — Garmin Call Dialer</h1>
+<p class="updated">Last updated: 2026-09-24</p>
+
+<p>Garmin Call Dialer ("the app") is a small companion app that lets a paired Garmin
+watch trigger a phone call on your Android phone.</p>
+
+<h2>What the app does</h2>
+<ul>
+  <li>Receives a phone number from the Connect IQ widget on your Garmin watch (over
+  Bluetooth, via the Garmin Connect Mobile / Connect IQ Mobile SDK) and places a
+  call to that number using Android's TelecomManager.</li>
+  <li>Lets you define up to 5 favorites (a name and a number each) either by picking
+  a contact from your phone's Contacts app or by typing a name/number manually,
+  and sends that list to your watch over the same Bluetooth connection.</li>
+</ul>
+
+<h2>Data collection</h2>
+<p>The app does not collect, store, transmit, or sell any data to the developer or
+to any third party. Specifically:</p>
+<ul>
+  <li><strong>No analytics, tracking, or advertising SDKs</strong> are included in the app.</li>
+  <li><strong>No servers</strong>: all communication happens directly between your phone and your
+  own paired Garmin watch over Bluetooth (via the Garmin Connect Mobile app).
+  Nothing is sent to the developer or to any cloud service operated by the developer.</li>
+  <li><strong>Contacts</strong>: when you use "Pick contact," Android's own contact picker returns
+  only the single name and number you selected. The app does not request
+  general access to your address book, does not read your full contact list,
+  and does not store contact data anywhere except locally on your own phone
+  and watch (see below).</li>
+  <li><strong>Favorites data</strong> (names and numbers you configure) is stored only locally on
+  your phone (in the app's private storage) and locally on your paired watch
+  (in the watch's on-device storage). This data never leaves your own devices.</li>
+</ul>
+
+<h2>Permissions used</h2>
+<table>
+  <tr><th>Permission</th><th>Why it's needed</th></tr>
+  <tr><td><code>CALL_PHONE</code></td><td>To place the call directly when triggered from the watch, without showing a confirmation dialog.</td></tr>
+  <tr><td><code>BLUETOOTH_CONNECT</code></td><td>Required by Android to run the background service that listens for messages from the Garmin Connect Mobile SDK.</td></tr>
+  <tr><td><code>FOREGROUND_SERVICE</code> / <code>FOREGROUND_SERVICE_CONNECTED_DEVICE</code></td><td>Keeps the Bluetooth listener alive in the background so a watch tap can trigger a call even when the phone is locked.</td></tr>
+  <tr><td><code>POST_NOTIFICATIONS</code></td><td>Shows the required persistent notification for the foreground service.</td></tr>
+  <tr><td><code>RECEIVE_BOOT_COMPLETED</code></td><td>Restarts the listening service after the phone reboots.</td></tr>
+  <tr><td><code>REQUEST_IGNORE_BATTERY_OPTIMIZATIONS</code></td><td>Lets you exempt the app from battery optimization so the background listener isn't killed while the phone is locked.</td></tr>
+</table>
+
+<h2>Data deletion</h2>
+<p>Since no data is collected by the developer, there is nothing to request
+deletion of. Uninstalling the app removes all locally stored favorites from
+your phone; clearing the watch app's data (or reinstalling it) removes
+favorites stored on the watch.</p>
+
+<h2>Contact</h2>
+<p>Questions about this policy can be sent to: <a href="mailto:iffikas@gmail.com">iffikas@gmail.com</a></p>
+
+</body>
+</html>

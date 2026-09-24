@@ -31,6 +31,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".FavoritesActivity"
+            android:exported="false" />
+
         <service
             android:name=".DialerConnectionService"
             android:exported="false"

@@ -1,6 +1,10 @@
-# Signing key - never commit
+# Signing keys - never commit
 keys/*.pem
 keys/*.der
+keys/*.keystore
+keys/*.jks
+keys/release-keystore-credentials.txt
+android-app/keystore.properties
 
 # Connect IQ build output
 watch-app/bin/

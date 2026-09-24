@@ -8,4 +8,17 @@
     <string name="grant_bluetooth_permission">Grant Bluetooth permission</string>
     <string name="disable_battery_optimization">Allow to run in background</string>
     <string name="permission_required">Call permission is required for this app to work</string>
+    <string name="manage_favorites">Manage favorites</string>
+
+    <string name="favorites_intro">Set up to 5 favorites - pick from your contacts or type a name and number (e.g. a gate/intercom code) - then send them to your watch.</string>
+    <string name="favorite_name_hint">Name</string>
+    <string name="favorite_number_hint">Number</string>
+    <string name="pick_contact">Pick contact</string>
+    <string name="clear_favorite">Clear</string>
+    <string name="send_to_watch">Send to watch</string>
+    <string name="sync_no_favorites">Add at least one favorite before sending</string>
+    <string name="sync_no_device">No paired Garmin device found</string>
+    <string name="sync_connect_unavailable">Open Garmin Connect Mobile and try again</string>
+    <string name="sync_success">Sent to watch</string>
+    <string name="sync_failed">Failed to send: %1$s</string>
 </resources>
