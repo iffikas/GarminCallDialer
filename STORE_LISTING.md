@@ -57,8 +57,8 @@ https://iffikas.github.io/GarminCallDialer/privacy.html
 
 ## Graphic assets checklist
 - [x] App icon, 512×512 PNG — `store-assets/play_store_icon_512.png` (simple blue-gray "GD" badge)
-- [ ] Feature graphic, 1024×500 PNG or JPG — not yet created
-- [ ] At least 2 phone screenshots (min 320px, max 3840px on the long edge) — not yet created
+- [x] Feature graphic, 1024×500 PNG — `store-assets/feature_graphic_1024x500.png`
+- [ ] At least 2 phone screenshots (min 320px, max 3840px on the long edge) — needs real screens from the app (Play doesn't accept mockups/renders as a substitute)
 
 ## Data safety form (Play Console) — talking points
 - No data collected.
