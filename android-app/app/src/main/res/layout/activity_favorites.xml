@@ -16,6 +16,22 @@
             android:orientation="vertical"
             android:padding="24dp">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSurface"
+                android:text="@string/favorites_help_heading" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="24dp"
+                android:text="@string/favorites_intro" />
+
             <LinearLayout
                 android:id="@+id/favoritesContainer"
                 android:layout_width="match_parent"
@@ -29,22 +45,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/add_favorite" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="?attr/colorOnSurface"
-                android:layout_marginTop="24dp"
-                android:text="@string/favorites_help_heading" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textColor="?attr/colorOnSurfaceVariant"
-                android:layout_marginTop="4dp"
-                android:text="@string/favorites_intro" />
 
         </LinearLayout>
     </ScrollView>
