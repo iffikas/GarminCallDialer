@@ -89,20 +89,30 @@ class DialerApp extends Application.AppBase {
         cancelSyncTimer();
         _awaitingResponse = false;
 
+        // Temporary on-screen diagnostics for the "phone says sent, watch
+        // shows no favorites" issue - shown as an extra line under
+        // "No favorites yet" until we track down where the message is
+        // getting lost or coming back empty.
         var payload = msg as Dictionary?;
         if (payload == null) {
+            Storage.setValue("debugLastSync", "msg not Dict: " + msg.toString());
+            refreshView();
             return;
         }
 
         var list = payload.get("favorites") as Array?;
         if (list == null) {
+            Storage.setValue("debugLastSync", "no 'favorites' key: " + payload.toString());
+            refreshView();
             return;
         }
 
+        Storage.setValue("debugLastSync", "raw:" + list.size().toString() + " " + list.toString());
         Storage.setValue("favorites", list);
+        refreshView();
+    }
 
-        // Refresh immediately - covers both the case where the menu is
-        // already on screen and the "not synced" error view.
+    hidden function refreshView() as Void {
         var view = buildFavoritesView();
         WatchUi.switchToView(view[0], view[1], WatchUi.SLIDE_IMMEDIATE);
     }
@@ -111,7 +121,12 @@ class DialerApp extends Application.AppBase {
         var favorites = FavoritesStore.loadFavorites();
 
         if (favorites.size() == 0) {
-            var view = new MessageView(WatchUi.loadResource(Rez.Strings.NoFavorites) as String);
+            var text = WatchUi.loadResource(Rez.Strings.NoFavorites) as String;
+            var debugInfo = Storage.getValue("debugLastSync") as String?;
+            if (debugInfo != null) {
+                text = text + "\n\n" + debugInfo;
+            }
+            var view = new MessageView(text);
             return [view, new WatchUi.BehaviorDelegate()];
         }
 

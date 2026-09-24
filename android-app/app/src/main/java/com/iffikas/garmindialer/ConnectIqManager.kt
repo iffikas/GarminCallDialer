@@ -35,9 +35,11 @@ object ConnectIqManager {
         onError: (ConnectIQ.IQSdkErrorStatus) -> Unit = {}
     ) {
         if (ready) {
+            Log.d(TAG, "runWhenReady: already ready, calling back immediately")
             onReady(connectIQ)
             return
         }
+        Log.d(TAG, "runWhenReady: not ready yet (initStarted=$initStarted), queueing")
         pending.add(onReady to onError)
         ensureInitialized(context)
     }

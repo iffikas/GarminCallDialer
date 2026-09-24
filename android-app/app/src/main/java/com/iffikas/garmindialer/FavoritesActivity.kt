@@ -67,6 +67,7 @@ class FavoritesActivity : AppCompatActivity() {
         updateAddButtonVisibility()
 
         findViewById<Button>(R.id.sendToWatchButton).setOnClickListener {
+            Log.d(TAG, "Send to watch tapped")
             saveFavorites()
             sendFavoritesToWatch()
         }
@@ -160,10 +161,14 @@ class FavoritesActivity : AppCompatActivity() {
         // and can take a couple of seconds, and a silent button was the
         // original complaint that led here.
         syncStatusText.text = getString(R.string.sync_connecting)
+        Log.d(TAG, "sendFavoritesToWatch: collected ${favorites.size} favorites, requesting SDK")
 
         ConnectIqManager.runWhenReady(
             applicationContext,
-            onReady = { connectIQ -> sendPayload(connectIQ, favorites) },
+            onReady = { connectIQ ->
+                Log.d(TAG, "ConnectIqManager ready, sending payload")
+                sendPayload(connectIQ, favorites)
+            },
             onError = { status ->
                 Log.e(TAG, "ConnectIQ init error: $status")
                 runOnUiThread {
@@ -176,6 +181,7 @@ class FavoritesActivity : AppCompatActivity() {
     private fun sendPayload(connectIQ: ConnectIQ, favorites: List<Map<String, String>>) {
         try {
             val devices: List<IQDevice> = connectIQ.knownDevices ?: emptyList()
+            Log.d(TAG, "knownDevices=${devices.map { "${it.friendlyName}(${it.status})" }}")
             if (devices.isEmpty()) {
                 syncStatusText.text = getString(R.string.sync_no_device)
                 return
@@ -184,7 +190,9 @@ class FavoritesActivity : AppCompatActivity() {
             val watchApp = IQApp(Constants.WATCH_APP_ID)
             val payload = mapOf("favorites" to favorites)
             for (device in devices) {
+                Log.d(TAG, "Calling sendMessage to ${device.friendlyName}, payload=$payload")
                 connectIQ.sendMessage(device, watchApp, payload) { _, _, status ->
+                    Log.d(TAG, "sendMessage callback status=$status")
                     runOnUiThread {
                         syncStatusText.text = if (status == ConnectIQ.IQMessageStatus.SUCCESS) {
                             getString(R.string.sync_success)
