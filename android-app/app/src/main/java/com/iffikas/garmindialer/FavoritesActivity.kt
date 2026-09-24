@@ -13,6 +13,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.garmin.android.connectiq.ConnectIQ
 import com.garmin.android.connectiq.IQApp
 import com.garmin.android.connectiq.IQDevice
@@ -67,6 +69,17 @@ class FavoritesActivity : AppCompatActivity() {
         findViewById<Button>(R.id.sendToWatchButton).setOnClickListener {
             saveFavorites()
             sendFavoritesToWatch()
+        }
+
+        // Android 15+ (targetSdk 36) draws edge-to-edge by default, so the
+        // bottom bar needs its own padding to clear the gesture/navigation
+        // bar instead of being partially hidden behind it.
+        val bottomBar = findViewById<LinearLayout>(R.id.bottomBar)
+        val bottomBarBasePadding = bottomBar.paddingBottom
+        ViewCompat.setOnApplyWindowInsetsListener(bottomBar) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(view.paddingLeft, view.paddingTop, view.paddingRight, bottomBarBasePadding + systemBars.bottom)
+            insets
         }
     }
 
@@ -143,19 +156,21 @@ class FavoritesActivity : AppCompatActivity() {
             return
         }
 
-        val connectIQ = ConnectIQ.getInstance(applicationContext, ConnectIQ.IQConnectType.WIRELESS)
-        connectIQ.initialize(applicationContext, true, object : ConnectIQ.ConnectIQListener {
-            override fun onSdkReady() {
-                sendPayload(connectIQ, favorites)
-            }
+        // Give immediate feedback - the SDK connect + send below is async
+        // and can take a couple of seconds, and a silent button was the
+        // original complaint that led here.
+        syncStatusText.text = getString(R.string.sync_connecting)
 
-            override fun onInitializeError(status: ConnectIQ.IQSdkErrorStatus) {
+        ConnectIqManager.runWhenReady(
+            applicationContext,
+            onReady = { connectIQ -> sendPayload(connectIQ, favorites) },
+            onError = { status ->
                 Log.e(TAG, "ConnectIQ init error: $status")
-                syncStatusText.text = getString(R.string.sync_connect_unavailable)
+                runOnUiThread {
+                    syncStatusText.text = getString(R.string.sync_connect_unavailable)
+                }
             }
-
-            override fun onSdkShutDown() {}
-        })
+        )
     }
 
     private fun sendPayload(connectIQ: ConnectIQ, favorites: List<Map<String, String>>) {

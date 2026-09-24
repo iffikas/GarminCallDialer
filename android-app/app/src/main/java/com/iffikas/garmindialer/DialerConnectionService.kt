@@ -32,22 +32,22 @@ class DialerConnectionService : Service() {
         super.onCreate()
         startForeground(Constants.NOTIFICATION_ID, buildNotification(getString(R.string.status_starting)))
 
-        connectIQ = ConnectIQ.getInstance(applicationContext, ConnectIQ.IQConnectType.WIRELESS)
-        connectIQ.initialize(applicationContext, true, object : ConnectIQ.ConnectIQListener {
-            override fun onSdkReady() {
+        // Routed through ConnectIqManager (rather than calling
+        // connectIQ.initialize() directly) so this service and
+        // FavoritesActivity share one SDK initialization instead of racing
+        // each other with separate listeners.
+        ConnectIqManager.runWhenReady(
+            applicationContext,
+            onReady = { iq ->
+                connectIQ = iq
                 sdkReady = true
                 registerForWatchEvents()
-            }
-
-            override fun onInitializeError(status: ConnectIQ.IQSdkErrorStatus) {
+            },
+            onError = { status ->
                 Log.e(TAG, "ConnectIQ init error: $status")
                 updateNotification(getString(R.string.status_connect_unavailable))
             }
-
-            override fun onSdkShutDown() {
-                sdkReady = false
-            }
-        })
+        )
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

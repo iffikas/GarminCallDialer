@@ -16,14 +16,6 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textColor="?attr/colorOnSurface"
-                android:layout_marginBottom="8dp"
-                android:text="@string/favorites_intro" />
-
             <LinearLayout
                 android:id="@+id/favoritesContainer"
                 android:layout_width="match_parent"
@@ -38,16 +30,35 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/add_favorite" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSurface"
+                android:layout_marginTop="24dp"
+                android:text="@string/favorites_help_heading" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:layout_marginTop="4dp"
+                android:text="@string/favorites_intro" />
+
         </LinearLayout>
     </ScrollView>
 
     <LinearLayout
+        android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="?attr/colorSurface"
         android:elevation="8dp"
-        android:padding="16dp">
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp">
 
         <Button
             android:id="@+id/sendToWatchButton"
