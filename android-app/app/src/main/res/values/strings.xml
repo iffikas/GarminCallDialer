@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Garmin Call Dialer</string>
-    <string name="splash_tagline">Garmin Dialer</string>
+    <string name="app_name">Wrist Dialer</string>
+    <string name="splash_tagline">Wrist Dialer</string>
     <string name="status_starting">Starting…</string>
     <string name="status_watching">Watching for call requests from your watch</string>
     <string name="status_no_device">No paired Garmin device found</string>
@@ -11,7 +11,7 @@
     <string name="permission_required">Call permission is required for this app to work</string>
     <string name="manage_favorites">Manage favorites</string>
 
-    <string name="favorites_help_heading">RTFM</string>
+    <string name="favorites_help_heading">How it works</string>
     <string name="favorites_intro">Set up to 5 favorites - pick from your contacts or type a name and number (e.g. a gate/intercom code), then tap \"Send to watch\" below. The watch also asks for the latest list itself every time you open its widget, so it self-corrects even if you forget to send.</string>
     <string name="favorite_name_hint">Name</string>
     <string name="favorite_number_hint">Number</string>

@@ -72,10 +72,35 @@ object ConnectIqManager {
 
     @Synchronized
     private fun onSdkReadyInternal() {
+        useBinderService()
         ready = true
         val callbacks = pending.toList()
         pending.clear()
         callbacks.forEach { (onReady, _) -> onReady(connectIQ) }
+    }
+
+    /**
+     * By default the SDK receives watch messages through a broadcast receiver
+     * registered as RECEIVER_EXPORTED with no permission and no sender check,
+     * so any app on the phone could forge an INCOMING_MESSAGE and make us
+     * place a call without holding CALL_PHONE itself. Switching to the binder
+     * service unregisters that receiver; the binder path only accepts calls
+     * from a package signed with Garmin Connect Mobile's certificate.
+     *
+     * Must run before any registerForAppEvents() (it clears app listeners),
+     * and only once per initialize() (it unregisters the receiver, which
+     * throws if done twice) - hence here rather than in the service.
+     *
+     * If Garmin Connect Mobile is too old to support it, the SDK leaves the
+     * broadcast receiver in place, so calling still works, just unhardened.
+     */
+    private fun useBinderService() {
+        try {
+            connectIQ.registerAppToUseBinderService(Constants.WATCH_APP_ID)
+            Log.d(TAG, "Using binder service for watch messages")
+        } catch (e: Exception) {
+            Log.w(TAG, "Binder service unavailable, falling back to broadcasts", e)
+        }
     }
 
     @Synchronized

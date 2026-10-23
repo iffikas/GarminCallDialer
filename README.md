@@ -1,4 +1,4 @@
-# Garmin Dialer (widget)
+# Wrist Dialer for Garmin (widget)
 
 Trigger a phone call directly from a Garmin watch, no phone interaction required.
 
@@ -7,6 +7,8 @@ Trigger a phone call directly from a Garmin watch, no phone interaction required
 > arrived in API 4.0.0 — so devices below that stay here, and everything at or
 > above it is served by [GarminCallDialer2](../GarminCallDialer2), which uses a
 > device app with a glance. One Android companion app serves both.
+
+If this saves you some fumbling for your phone, you can [support development on Ko-fi](https://ko-fi.com/A5N029BZWH).
 
 ## Why I built this
 

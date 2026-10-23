@@ -97,12 +97,18 @@ class DialerApp extends Application.AppBase {
             return;
         }
 
-        var list = payload.get("favorites") as Array?;
-        if (list == null) {
+        var list = payload.get("favorites");
+        if (!(list instanceof Array)) {
             return;
         }
 
-        Storage.setValue("favorites", list);
+        // Store only validated, capped entries - see FavoritesStore.
+        var favorites = FavoritesStore.normalizeStored(list as Array);
+        var toStore = [] as Array<Dictionary>;
+        for (var i = 0; i < favorites.size(); i++) {
+            toStore.add({"name" => favorites[i][:name], "number" => favorites[i][:number]});
+        }
+        Storage.setValue("favorites", toStore);
 
         // Refresh immediately - covers both the case where the menu is
         // already on screen and the "not synced" error view.
@@ -118,7 +124,7 @@ class DialerApp extends Application.AppBase {
             return [view, new WatchUi.BehaviorDelegate()];
         }
 
-        var menu = new WatchUi.Menu2({:title => WatchUi.loadResource(Rez.Strings.AppName) as String});
+        var menu = new WatchUi.Menu2({:title => WatchUi.loadResource(Rez.Strings.MenuTitle) as String});
         for (var i = 0; i < favorites.size(); i++) {
             var favorite = favorites[i];
             menu.addItem(new WatchUi.MenuItem(favorite[:name], favorite[:number], favorite[:number], {}));

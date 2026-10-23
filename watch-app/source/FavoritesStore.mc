@@ -22,16 +22,21 @@ module FavoritesStore {
         return loadBuiltInFavorites();
     }
 
+    // Same limit as the phone app (Constants.MAX_FAVORITES). ConnectIQ doesn't
+    // authenticate which phone app sent a message, so anything stored here is
+    // treated as untrusted: capped in size and type-checked before display.
+    const MAX_FAVORITES = 5;
+
     function normalizeStored(stored as Array) as Array<Dictionary> {
         var favorites = [] as Array<Dictionary>;
-        for (var i = 0; i < stored.size(); i++) {
-            var entry = stored[i] as Dictionary?;
-            if (entry == null) {
+        for (var i = 0; i < stored.size() && favorites.size() < MAX_FAVORITES; i++) {
+            var entry = stored[i];
+            if (!(entry instanceof Dictionary)) {
                 continue;
             }
-            var name = entry.get("name") as String?;
-            var number = entry.get("number") as String?;
-            if (name != null && !name.equals("") && number != null && !number.equals("")) {
+            var name = (entry as Dictionary).get("name");
+            var number = (entry as Dictionary).get("number");
+            if (name instanceof String && !name.equals("") && number instanceof String && !number.equals("")) {
                 favorites.add({:name => name, :number => number});
             }
         }

@@ -1,8 +1,8 @@
-# Privacy Policy — Garmin Call Dialer
+# Privacy Policy — Wrist Dialer for Garmin
 
-_Last updated: 2026-09-24_
+_Last updated: 2026-10-20_
 
-Garmin Call Dialer ("the app") is a small companion app that lets a paired Garmin
+Wrist Dialer for Garmin ("the app") is a small companion app that lets a paired Garmin
 watch trigger a phone call on your Android phone.
 
 ## What the app does
@@ -32,7 +32,8 @@ to any third party. Specifically:
 - **Favorites data** (names and numbers you configure) is stored only:
   - locally on your phone, in the app's private storage, and
   - locally on your paired watch, in the watch's on-device storage.
-  This data never leaves your own devices.
+  This data never leaves your own devices. The app opts out of Android's
+  cloud backup, so favorites are not copied to your Google account backup.
 
 ## Permissions used
 

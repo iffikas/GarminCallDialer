@@ -29,7 +29,16 @@ object CallTrigger {
         val number = rawNumber.trim()
 
         if (!PHONE_PATTERN.matches(number)) {
-            Log.w(TAG, "Rejected implausible number from watch: $number")
+            Log.w(TAG, "Rejected implausible number from watch")
+            return
+        }
+
+        // A leading * or # makes it an MMI/USSD code (e.g. **21*<n># sets
+        // unconditional call forwarding), which Telecom would execute rather
+        // than dial. Favorites are phone numbers, so never pass those through.
+        val firstSignificant = number.trimStart('+', ' ', '(', ')', '-').firstOrNull()
+        if (firstSignificant == '*' || firstSignificant == '#') {
+            Log.w(TAG, "Rejected MMI/USSD-style code from watch")
             return
         }
 
@@ -42,6 +51,6 @@ object CallTrigger {
 
         val telecomManager = context.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
         telecomManager.placeCall(Uri.parse("tel:" + Uri.encode(number)), null)
-        Log.d(TAG, "TelecomManager.placeCall invoked for: $number")
+        Log.d(TAG, "TelecomManager.placeCall invoked")
     }
 }
