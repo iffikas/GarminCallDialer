@@ -22,6 +22,24 @@ object FavoritesRepository {
         return favorites
     }
 
+    /**
+     * Whether [number] is one of the saved favorites. Compared on digits and
+     * a leading +, so "+372 600 0101" and "+3726000101" count as the same.
+     */
+    fun containsNumber(context: Context, number: String): Boolean {
+        val wanted = normalize(number)
+        if (wanted.isEmpty()) {
+            return false
+        }
+        return load(context).any { normalize(it["number"] ?: "") == wanted }
+    }
+
+    private fun normalize(number: String): String {
+        val trimmed = number.trim()
+        val digits = trimmed.filter { it.isDigit() }
+        return if (trimmed.startsWith("+")) "+$digits" else digits
+    }
+
     fun save(context: Context, favorites: List<Map<String, String>>) {
         val prefs = context.getSharedPreferences(Constants.FAVORITES_PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit().apply {

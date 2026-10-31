@@ -25,7 +25,7 @@ import com.garmin.android.connectiq.exception.ServiceUnavailableException
 class DialerConnectionService : Service() {
 
     private lateinit var connectIQ: ConnectIQ
-    private val watchApp = IQApp(Constants.WATCH_APP_ID)
+    private val watchApps = Constants.WATCH_APP_IDS.map { IQApp(it) }
     private var sdkReady = false
 
     override fun onCreate() {
@@ -68,8 +68,10 @@ class DialerConnectionService : Service() {
                 connectIQ.registerForDeviceEvents(device) { _, status ->
                     Log.d(TAG, "Device status changed: $status")
                 }
-                connectIQ.registerForAppEvents(device, watchApp) { eventDevice, _, message, _ ->
-                    handleMessage(eventDevice, message)
+                for (watchApp in watchApps) {
+                    connectIQ.registerForAppEvents(device, watchApp) { eventDevice, eventApp, message, _ ->
+                        handleMessage(eventDevice, eventApp, message)
+                    }
                 }
             }
             updateNotification(getString(R.string.status_watching))
@@ -81,7 +83,7 @@ class DialerConnectionService : Service() {
         }
     }
 
-    private fun handleMessage(device: IQDevice, message: List<Any>?) {
+    private fun handleMessage(device: IQDevice, app: IQApp, message: List<Any>?) {
         Log.d(TAG, "Message received from watch")
         val payload = message?.getOrNull(0) as? Map<*, *> ?: run {
             Log.w(TAG, "Message payload was not a Map, ignoring")
@@ -91,12 +93,20 @@ class DialerConnectionService : Service() {
         val command = payload["cmd"] as? String
         if (command == "get_favorites") {
             Log.d(TAG, "Watch requested current favorites")
-            sendFavoritesToDevice(device)
+            sendFavoritesToDevice(device, app)
             return
         }
 
         val number = payload["n"] as? String ?: run {
             Log.w(TAG, "Message had no 'n' key, ignoring")
+            return
+        }
+        // The SDK's broadcast receiver can't tell the watch apart from any
+        // other app on the phone sending the same broadcast (see
+        // ConnectIqManager), so only dial numbers the user saved as favorites
+        // here - a forged request can then reach nothing but those.
+        if (!FavoritesRepository.containsNumber(applicationContext, number)) {
+            Log.w(TAG, "Rejected call request for a number that is not a saved favorite")
             return
         }
         Log.d(TAG, "Placing call requested by watch")
@@ -105,8 +115,9 @@ class DialerConnectionService : Service() {
 
     // Answers the watch's on-open sync request with whatever favorites are
     // currently saved on the phone (possibly an empty list, which clears
-    // stale favorites the watch cached from before).
-    private fun sendFavoritesToDevice(device: IQDevice) {
+    // stale favorites the watch cached from before). Replies to whichever of
+    // the two watch apps asked.
+    private fun sendFavoritesToDevice(device: IQDevice, watchApp: IQApp) {
         try {
             val favorites = FavoritesRepository.load(applicationContext)
             val payload = mapOf("favorites" to favorites)

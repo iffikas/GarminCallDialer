@@ -24,8 +24,8 @@ android {
         applicationId = "com.iffikas.garmindialer"
         minSdk = 26
         targetSdk = 36
-        versionCode = 7
-        versionName = "1.2.1"
+        versionCode = 10
+        versionName = "1.2.3"
     }
 
     signingConfigs {

@@ -65,7 +65,7 @@ to any third party. Specifically:</p>
   <tr><td><code>CALL_PHONE</code></td><td>To place the call directly when triggered from the watch, without showing a confirmation dialog.</td></tr>
   <tr><td><code>BLUETOOTH_CONNECT</code></td><td>Required by Android to run the background service that listens for messages from the Garmin Connect Mobile SDK.</td></tr>
   <tr><td><code>FOREGROUND_SERVICE</code> / <code>FOREGROUND_SERVICE_CONNECTED_DEVICE</code></td><td>Keeps the Bluetooth listener alive in the background so a watch tap can trigger a call even when the phone is locked.</td></tr>
-  <tr><td><code>POST_NOTIFICATIONS</code></td><td>Shows the required persistent notification for the foreground service.</td></tr>
+  <tr><td><code>POST_NOTIFICATIONS</code></td><td>Optional. Shows the persistent notification for the foreground service; calling works without it.</td></tr>
   <tr><td><code>RECEIVE_BOOT_COMPLETED</code></td><td>Restarts the listening service after the phone reboots.</td></tr>
   <tr><td><code>REQUEST_IGNORE_BATTERY_OPTIMIZATIONS</code></td><td>Lets you exempt the app from battery optimization so the background listener isn't killed while the phone is locked.</td></tr>
 </table>

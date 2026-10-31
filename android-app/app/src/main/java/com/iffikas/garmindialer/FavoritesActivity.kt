@@ -181,16 +181,23 @@ class FavoritesActivity : AppCompatActivity() {
                 return
             }
 
-            val watchApp = IQApp(Constants.WATCH_APP_ID)
             val payload = mapOf("favorites" to favorites)
+            // Every watch gets the list for both watch apps; on each watch
+            // only one of them is installed, so the other send fails. Report
+            // success if any send succeeded, rather than whichever finished
+            // last.
+            var anySucceeded = false
             for (device in devices) {
-                connectIQ.sendMessage(device, watchApp, payload) { _, _, status ->
-                    Log.d(TAG, "sendMessage status=$status")
-                    runOnUiThread {
-                        syncStatusText.text = if (status == ConnectIQ.IQMessageStatus.SUCCESS) {
-                            getString(R.string.sync_success)
-                        } else {
-                            getString(R.string.sync_failed, status.toString())
+                for (watchApp in Constants.WATCH_APP_IDS.map { IQApp(it) }) {
+                    connectIQ.sendMessage(device, watchApp, payload) { _, _, status ->
+                        Log.d(TAG, "sendMessage app=${watchApp.applicationId} status=$status")
+                        runOnUiThread {
+                            if (status == ConnectIQ.IQMessageStatus.SUCCESS) {
+                                anySucceeded = true
+                                syncStatusText.text = getString(R.string.sync_success)
+                            } else if (!anySucceeded) {
+                                syncStatusText.text = getString(R.string.sync_failed, status.toString())
+                            }
                         }
                     }
                 }

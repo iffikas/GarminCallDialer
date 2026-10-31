@@ -73,14 +73,7 @@ class MainActivity : AppCompatActivity() {
         val hasBluetoothPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) ==
             PackageManager.PERMISSION_GRANTED
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val hasNotificationPermission = ContextCompat.checkSelfPermission(
-                this, Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED
-            if (!hasNotificationPermission) {
-                requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
-            }
-        }
+        askForNotificationsOnce()
 
         grantCallPermissionButton.visibility = if (hasCallPermission) android.view.View.GONE else android.view.View.VISIBLE
         grantBluetoothPermissionButton.visibility = if (hasBluetoothPermission) android.view.View.GONE else android.view.View.VISIBLE
@@ -99,6 +92,24 @@ class MainActivity : AppCompatActivity() {
         statusText.setText(R.string.status_watching)
     }
 
+    // Notifications are optional: without them the service still runs and
+    // calls still go through, Android just hides the "Watching for call
+    // requests" notification. So ask once, on first launch, and never again -
+    // asking on every resume nagged anyone who had said no.
+    private fun askForNotificationsOnce() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return
+        }
+        val granted = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+            PackageManager.PERMISSION_GRANTED
+        val prefs = getSharedPreferences(UI_PREFS_NAME, Context.MODE_PRIVATE)
+        if (granted || prefs.getBoolean(KEY_ASKED_NOTIFICATIONS, false)) {
+            return
+        }
+        prefs.edit().putBoolean(KEY_ASKED_NOTIFICATIONS, true).apply()
+        requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+    }
+
     private fun isIgnoringBatteryOptimizations(): Boolean {
         val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
         return powerManager.isIgnoringBatteryOptimizations(packageName)
@@ -110,5 +121,10 @@ class MainActivity : AppCompatActivity() {
             data = Uri.parse("package:$packageName")
         }
         startActivity(intent)
+    }
+
+    companion object {
+        private const val UI_PREFS_NAME = "ui"
+        private const val KEY_ASKED_NOTIFICATIONS = "asked_notifications"
     }
 }

@@ -2,7 +2,7 @@
 
 Two stores, two listings:
 
-1. **Google Play**: the Android companion app (`com.iffikas.garmindialer`, v1.2.1 / versionCode 7)
+1. **Google Play**: the Android companion app (`com.iffikas.garmindialer`, v1.2.3 / versionCode 10)
 2. **Garmin Connect IQ Store**: the watch widget ("Wrist Dialer (widget)" on the watch, 41 devices including the Instinct 2 series, API 3.2+)
 
 Upload files:
@@ -41,13 +41,13 @@ The watch also asks your phone for the latest list each time you open the widget
 PERMISSIONS AND WHY
 • Phone: places the call when your watch asks for it.
 • Nearby devices / Bluetooth: keeps the connection to your watch through Garmin Connect.
-• Notifications: shows the required "Watching for call requests" notification for the background service.
+• Notifications (optional): shows a "Watching for call requests" notification while the background service runs. Calling works without it.
 • Battery optimization exemption (optional, recommended): stops Android from killing the listener while your phone is locked.
 
 PRIVACY AND SECURITY
 • No account, ads, analytics or tracking.
 • Your favorites are stored only on your phone and your watch. They are not uploaded anywhere, and the app opts out of Google cloud backup.
-• Only call requests relayed by Garmin Connect are accepted. Other apps on your phone cannot use this app to place calls.
+• Calls are only placed to numbers in your own favorites list, so other apps on your phone cannot use this app to call any other number.
 • Service codes (numbers starting with * or #) are always refused, so a call request can never change your phone's call-forwarding or other network settings.
 
 REQUIREMENTS
@@ -60,13 +60,14 @@ Wrist Dialer is free, with no ads. If it's useful to you, you can support develo
 
 Wrist Dialer is an independent app. It is not made or endorsed by Garmin Ltd.
 
-### What's new (v1.2.1, max 500)
-New name: Wrist Dialer for Garmin.
-Security and privacy update:
-• Call requests are accepted only when relayed by Garmin Connect, so other apps cannot trigger calls.
-• Service codes (* and # numbers) are now refused.
-• Favorites are no longer included in Google cloud backup.
-• Phone numbers are no longer written to the system log.
+### What's new (v1.2.3, max 500)
+New name: Wrist Dialer for Garmin. Now also works with Venu 3 and other newer watches.
+After updating, open the app and save your favorites once.
+• Calls go only to numbers in your favorites, so other apps can't misuse it.
+• Service codes (* and # numbers) are refused.
+• Favorites are not included in Google cloud backup.
+• Phone numbers are no longer logged.
+• Notification permission is optional and asked only once.
 
 ### Category / contact
 - Category: **Tools**
@@ -90,7 +91,7 @@ Security and privacy update:
 - Video: a short screen recording (unlisted YouTube link) showing: open the app → notification visible → select a favorite on the watch → phone starts the call.
 
 ### CALL_PHONE justification (if Play asks)
-"The app's only purpose is to let the user's paired Garmin smartwatch start a phone call on the user's own phone with one button press. Placing the call directly via TelecomManager.placeCall, without an extra confirmation, is the core requested behavior, just like a speed-dial button. Numbers come only from favorites the user configured (picked from their Contacts or typed by hand). Only messages relayed by the Garmin Connect app (verified by its signing certificate) are accepted, and MMI/USSD service codes are always rejected."
+"The app's only purpose is to let the user's paired Garmin smartwatch start a phone call on the user's own phone with one button press. Placing the call directly via TelecomManager.placeCall, without an extra confirmation, is the core requested behavior, just like a speed-dial button. Numbers come only from favorites the user configured (picked from their Contacts or typed by hand). The app only dials numbers that are in the user's own saved favorites list, and MMI/USSD service codes are always rejected."
 
 ### Battery optimization (if Play asks about REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
 "Companion app for a Bluetooth smartwatch. It must keep receiving call requests from the watch while the phone is in Doze; otherwise a button press on the watch is silently lost. The exemption is optional and only requested when the user taps 'Allow to run in background'."

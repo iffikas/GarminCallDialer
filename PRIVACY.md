@@ -42,7 +42,7 @@ to any third party. Specifically:
 | `CALL_PHONE` | To place the call directly when triggered from the watch, without showing a confirmation dialog. |
 | `BLUETOOTH_CONNECT` | Required by Android to run the background service that listens for messages from the Garmin Connect Mobile SDK. |
 | `FOREGROUND_SERVICE` / `FOREGROUND_SERVICE_CONNECTED_DEVICE` | Keeps the Bluetooth listener alive in the background so a watch tap can trigger a call even when the phone is locked. |
-| `POST_NOTIFICATIONS` | Shows the required persistent notification for the foreground service. |
+| `POST_NOTIFICATIONS` | Optional. Shows the persistent notification for the foreground service; calling works without it. |
 | `RECEIVE_BOOT_COMPLETED` | Restarts the listening service after the phone reboots. |
 | `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` | Lets you exempt the app from battery optimization so the background listener isn't killed while the phone is locked. |
 
