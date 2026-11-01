@@ -21,4 +21,8 @@ object Constants {
     const val FAVORITES_PREFS_NAME = "favorites"
     fun favoriteNameKey(index: Int) = "favorite_${index}_name"
     fun favoriteNumberKey(index: Int) = "favorite_${index}_number"
+
+    // Global "Show phone numbers on watch" toggle, kept in the same prefs
+    // file as the favorites. Defaults to true (the original behaviour).
+    const val SHOW_NUMBER_KEY = "show_number"
 }

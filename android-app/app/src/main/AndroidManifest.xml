@@ -41,6 +41,10 @@
             android:name=".FavoritesActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".PermissionsActivity"
+            android:exported="false" />
+
         <service
             android:name=".DialerConnectionService"
             android:exported="false"

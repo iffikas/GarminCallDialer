@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_permissions">App permissions</string>
+    <string name="permissions_intro">Wrist Dialer runs quietly in the background and waits for call requests from your watch.</string>
+    <string name="perm_call">Phone calls</string>
+    <string name="perm_call_why">Required. Lets the app place the call your watch asks for.</string>
+    <string name="perm_bluetooth">Bluetooth</string>
+    <string name="perm_bluetooth_why">Required. Lets the app listen for your watch through Garmin Connect.</string>
+    <string name="perm_notifications">Notifications</string>
+    <string name="perm_notifications_why">Optional. Only shows the \"Watching for call requests\" status notification; calls work without it.</string>
+    <string name="perm_battery">Run in background</string>
+    <string name="perm_battery_why">Stops Android from closing the app while the phone is locked.</string>
+    <string name="permission_granted">✓ Allowed</string>
+    <string name="permission_missing">Not allowed</string>
+    <string name="permission_allow">Allow</string>
+    <string name="permission_manage">Manage</string>
+    <string name="permissions_revoke_hint">Turning a permission off in Android settings makes Android close the app. This is normal - the app restarts its background listener by itself.</string>
+    <string name="permission_required_bluetooth">Bluetooth permission is required - open App permissions to allow it</string>
+    <string name="permission_required_both">Phone call and Bluetooth permissions are required - open App permissions to allow them</string>
+</resources>

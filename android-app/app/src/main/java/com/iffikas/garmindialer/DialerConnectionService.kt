@@ -120,7 +120,7 @@ class DialerConnectionService : Service() {
     private fun sendFavoritesToDevice(device: IQDevice, watchApp: IQApp) {
         try {
             val favorites = FavoritesRepository.load(applicationContext)
-            val payload = mapOf("favorites" to favorites)
+            val payload = FavoritesRepository.buildWatchPayload(applicationContext, favorites)
             connectIQ.sendMessage(device, watchApp, payload) { _, _, status ->
                 Log.d(TAG, "Favorites sync response status: $status")
             }

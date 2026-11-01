@@ -13,6 +13,55 @@
         <item name="android:navigationBarColor">@color/color_background</item>
     </style>
 
+    <!-- Permissions screen -->
+    <style name="Card" parent="Widget.Material3.CardView.Filled">
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="cardBackgroundColor">@color/color_surface</item>
+    </style>
+
+    <style name="CardTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="CardHint">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:textAppearance">?attr/textAppearanceBodyMedium</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+    </style>
+
+    <style name="PermissionRow">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:padding">16dp</item>
+    </style>
+
+    <style name="PermissionText">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="PermissionState" parent="CardHint">
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabelLarge</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="PermissionButton" parent="Widget.Material3.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">12dp</item>
+        <item name="android:text">@string/permission_allow</item>
+    </style>
+
     <style name="Theme.GarminDialer.Splash" parent="Theme.GarminDialer">
         <item name="android:windowBackground">@color/color_background</item>
     </style>

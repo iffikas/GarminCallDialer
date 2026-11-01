@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.garmin.android.connectiq.ConnectIQ
 import com.garmin.android.connectiq.IQApp
 import com.garmin.android.connectiq.IQDevice
@@ -65,6 +66,14 @@ class FavoritesActivity : AppCompatActivity() {
             addFavoriteRow("", "")
         }
         updateAddButtonVisibility()
+
+        // Saved straight away; the watch picks it up with the next
+        // "Send to watch" or the next time it opens and asks for favorites.
+        val showNumberSwitch = findViewById<MaterialSwitch>(R.id.showNumberSwitch)
+        showNumberSwitch.isChecked = FavoritesRepository.loadShowNumber(this)
+        showNumberSwitch.setOnCheckedChangeListener { _, isChecked ->
+            FavoritesRepository.saveShowNumber(this, isChecked)
+        }
 
         findViewById<Button>(R.id.sendToWatchButton).setOnClickListener {
             saveFavorites()
@@ -181,7 +190,7 @@ class FavoritesActivity : AppCompatActivity() {
                 return
             }
 
-            val payload = mapOf("favorites" to favorites)
+            val payload = FavoritesRepository.buildWatchPayload(this, favorites)
             // Every watch gets the list for both watch apps; on each watch
             // only one of them is installed, so the other send fails. Report
             // success if any send succeeded, rather than whichever finished

@@ -84,7 +84,8 @@ class DialerApp extends Application.AppBase {
     // ahead of the build-time Application Properties defaults.
     //
     // Expected message shape:
-    // {"favorites" => [{"name" => "...", "number" => "..."}, ...]}
+    // {"favorites" => [{"name" => "...", "number" => "..."}, ...],
+    //  "showNumber" => true|false}
     function onFavoritesMessage(msg as Communications.PhoneAppMessage) as Void {
         cancelSyncTimer();
         _awaitingResponse = false;
@@ -110,6 +111,11 @@ class DialerApp extends Application.AppBase {
         }
         Storage.setValue("favorites", toStore);
 
+        // Older phone apps don't send showNumber, and anything that isn't a
+        // Boolean is ignored - both fall back to showing numbers.
+        var showNumber = payload.get("showNumber");
+        Storage.setValue("showNumber", showNumber instanceof Boolean ? showNumber : true);
+
         // Refresh immediately - covers both the case where the menu is
         // already on screen and the "not synced" error view.
         var view = buildFavoritesView();
@@ -124,10 +130,16 @@ class DialerApp extends Application.AppBase {
             return [view, new WatchUi.BehaviorDelegate()];
         }
 
+        // The phone decides whether numbers appear under names; null means
+        // nothing stored yet, so keep showing them.
+        var showNumber = Storage.getValue("showNumber") != false;
+
         var menu = new WatchUi.Menu2({:title => WatchUi.loadResource(Rez.Strings.MenuTitle) as String});
         for (var i = 0; i < favorites.size(); i++) {
             var favorite = favorites[i];
-            menu.addItem(new WatchUi.MenuItem(favorite[:name], favorite[:number], favorite[:number], {}));
+            // The id stays the number either way - FavoritesMenuDelegate dials it.
+            var sublabel = showNumber ? favorite[:number] : null;
+            menu.addItem(new WatchUi.MenuItem(favorite[:name], sublabel, favorite[:number], {}));
         }
 
         return [menu, new FavoritesMenuDelegate()];

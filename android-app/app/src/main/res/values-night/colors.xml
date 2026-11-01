@@ -10,4 +10,7 @@
     <color name="color_on_background">#ECF2F6</color>
     <color name="color_on_surface_variant">#A9B9C4</color>
     <color name="color_outline">#3A4B58</color>
+    <!-- Permission state: allowed / not allowed -->
+    <color name="ok">#81C995</color>
+    <color name="warn">#F2B8B5</color>
 </resources>

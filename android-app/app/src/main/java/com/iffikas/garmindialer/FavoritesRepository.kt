@@ -54,4 +54,23 @@ object FavoritesRepository {
             }
         }.apply()
     }
+
+    fun loadShowNumber(context: Context): Boolean {
+        val prefs = context.getSharedPreferences(Constants.FAVORITES_PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getBoolean(Constants.SHOW_NUMBER_KEY, true)
+    }
+
+    fun saveShowNumber(context: Context, showNumber: Boolean) {
+        val prefs = context.getSharedPreferences(Constants.FAVORITES_PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putBoolean(Constants.SHOW_NUMBER_KEY, showNumber).apply()
+    }
+
+    /**
+     * The message sent to the watch apps, by both the "Send to watch" push
+     * and the answer to the watch's "get_favorites" request, so the two can
+     * never drift apart. "showNumber" tells the watch whether to display the
+     * numbers next to the names.
+     */
+    fun buildWatchPayload(context: Context, favorites: List<Map<String, String>>): Map<String, Any> =
+        mapOf("favorites" to favorites, "showNumber" to loadShowNumber(context))
 }
